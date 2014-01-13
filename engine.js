@@ -132,7 +132,6 @@ function generateMoves() {
 			else {
 				var deltas = pieceDeltas[piece.type];
 				for(k=0; k<deltas.length; k++) {
-					var deltaAddition = deltas[k];
 					var delta = deltas[k];
 					
 					while(!(i+delta & 0x88)) {
@@ -149,7 +148,7 @@ function generateMoves() {
 								if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
 									break; //Non-sliding pieces only invoke their deltas once
 								}
-								delta += deltaAddition;
+								delta += deltas[k];
 							}
 						}
 					}
