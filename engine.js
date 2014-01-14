@@ -97,6 +97,9 @@ function makeMove(move, chessboard) {
 	if(Math.abs(to - from) === 32 && move.piece.type === pieces.PAWN) {
 		epSquare = (to < from) ? from - 16 : from + 16;
 	}
+	else {
+		epSquare = undefined; // En-passent only legible for one move
+	}
 	chessboard[from] = undefined;
 	chessboard[to] = move.piece;
 }
