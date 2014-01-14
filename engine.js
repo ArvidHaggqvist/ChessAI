@@ -85,6 +85,17 @@ function parseFEN(fen) {
 	}
 	console.log(board);
 }
+function makeMove(move) {
+	var from = move.fromSquare,
+		to = move.toSquare;
+
+	// If move is a pawn double move, set the enpassent square
+	if(Math.abs(to - from) === 32 && move.piece.type === pieces.PAWN) {
+		epSquare = (to < from) ? from - 16 : from + 16;
+	}
+	board[from] = undefined;
+	board[to] = move.piece;
+}
 
 function generateMoves() {
 	var moves = [];
@@ -191,9 +202,12 @@ function rank(square) {
 
 function init() {
 	parseFEN(startingPosition);
-	putPiece({type: 'p', color: 'b'}, 51);
-	putPiece({type: 'q', color: 'w'}, 81);
-	console.log(generateMoves().length);
+	//putPiece({type: 'p', color: 'b'}, 51);
+	//putPiece({type: 'q', color: 'w'}, 81);
+	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
+	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
+	console.log(generateMoves());
 	console.log(printBoard());
+	console.log(epSquare);
 }
 init();
