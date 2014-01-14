@@ -177,8 +177,8 @@ function generateMoves() {
 } 
 
 function duplicateBoard(board) {
-	var newBoard = [];
-	board.forEach(function(square, i) {
+	var newBoard = new Array(128);
+	traverseBoard(function(square, i) {
 		newBoard[i] = square;
 	});
 	return newBoard;
