@@ -85,7 +85,11 @@ function parseFEN(fen) {
 	}
 	console.log(board);
 }
-function makeMove(move) {
+function makeMove(move, chessboard) {
+
+	if(!chessboard) {
+		chessboard = board;
+	}
 	var from = move.fromSquare,
 		to = move.toSquare;
 
@@ -93,8 +97,8 @@ function makeMove(move) {
 	if(Math.abs(to - from) === 32 && move.piece.type === pieces.PAWN) {
 		epSquare = (to < from) ? from - 16 : from + 16;
 	}
-	board[from] = undefined;
-	board[to] = move.piece;
+	chessboard[from] = undefined;
+	chessboard[to] = move.piece;
 }
 
 function generateMoves() {
@@ -171,6 +175,14 @@ function generateMoves() {
 
 	return moves;
 } 
+
+function duplicateBoard(board) {
+	var newBoard = [];
+	board.forEach(function(square, i) {
+		newBoard[i] = square;
+	});
+	return newBoard;
+}
 
 function printBoard() {
 	var separator = '   +-------------------------+\n';
