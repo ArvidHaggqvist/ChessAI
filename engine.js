@@ -224,20 +224,27 @@ function generateMoves() {
 }
 function isAttacked(square) {
 	return traverseBoard(function(piece, i) {
-		if(attackArray[i - square + 119] > 0) {
-			var delta = deltaArray[i - square + 119];
-			while(i-delta > square) {
-				if(board[i-delta]) {
-					break;
+		if(piece && piece.color === turn) {
+			if(attackArray[i - square + 119] > 0) {
+				if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
+					return true;
 				}
-				else {
-					delta += deltaArray[i - square + 119];
-					if(i - delta === square) {
-						return true;
+				var delta = deltaArray[i - square + 119];
+				while(i-delta > square) {
+					if(board[i-delta]) {
+						break;
+					}
+					else {
+						delta += deltaArray[i - square + 119];
+						if(i - delta === square) {
+							return true;
+							break;
+						}
 					}
 				}
 			}
 		}
+		
 	});
 }
 
@@ -279,10 +286,11 @@ function rank(square) {
 
 function init() {
 	parseFEN(startingPosition);
-	//putPiece({type: 'p', color: 'b'}, 51);
-	//putPiece({type: 'q', color: 'w'}, 81);
+	putPiece({type: 'p', color: 'b'}, 81);
+	putPiece({type: 'q', color: 'w'}, 51);
 	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
 	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
+	console.log(isAttacked(81));
 	console.log(generateMoves());
 	console.log(printBoard());
 	console.log(epSquare);
