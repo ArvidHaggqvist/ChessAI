@@ -28,7 +28,7 @@ var moveTypes = {
 var possibleAttackers = {
 	KQR: 1,
 	KQB: 2,
-	N: 4
+	N: 4,
 	QB: 5,
 	QR: 6,
 };
@@ -221,7 +221,25 @@ function generateMoves() {
 	});
 
 	return moves;
-} 
+}
+function isAttacked(square) {
+	return traverseBoard(function(piece, i) {
+		if(attackArray[i - square + 119] > 0) {
+			var delta = deltaArray[i - square + 119];
+			while(i-delta > square) {
+				if(board[i-delta]) {
+					break;
+				}
+				else {
+					delta += deltaArray[i - square + 119];
+					if(i - delta === square) {
+						return true;
+					}
+				}
+			}
+		}
+	});
+}
 
 function duplicateBoard(board) {
 	var newBoard = new Array(128);
