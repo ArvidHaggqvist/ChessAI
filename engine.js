@@ -223,29 +223,37 @@ function generateMoves() {
 	return moves;
 }
 function isAttacked(square) {
-	return traverseBoard(function(piece, i) {
+	var attacked = traverseBoard(function(piece, i) {
 		if(piece && piece.color === turn) {
 			if(attackArray[i - square + 119] > 0) {
 				if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
-					return true;
+					return true; // Non-sliding pieces
+				}
+				if(i === 51) {
+					console.log(deltaArray[i - square + 119]);
 				}
 				var delta = deltaArray[i - square + 119];
-				while(i-delta > square) {
-					if(board[i-delta]) {
-						break;
+				while(true) {
+					if(board[i-delta] && i-delta !== square) {
+						return false;
 					}
 					else {
-						delta += deltaArray[i - square + 119];
 						if(i - delta === square) {
 							return true;
-							break;
 						}
+						delta += deltaArray[i - square + 119];
 					}
 				}
 			}
 		}
 		
 	});
+	if(attacked) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 function duplicateBoard(board) {
@@ -290,9 +298,10 @@ function init() {
 	putPiece({type: 'q', color: 'w'}, 51);
 	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
 	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
-	console.log(isAttacked(81));
 	console.log(generateMoves());
 	console.log(printBoard());
 	console.log(epSquare);
+	console.log(isAttacked(81));
+	//console.log(isAttacked(99));
 }
 init();
