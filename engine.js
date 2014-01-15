@@ -25,9 +25,53 @@ var moveTypes = {
 	castling: 4,
 	promotion: 5
 }
+var possibleAttackers = {
+	KQR: 1,
+	KQB: 2,
+	N: 4
+	QB: 5,
+	QR: 6,
+};
 
-var attackArray = [],
-	deltaArray = [];
+// The central square at index 119 marked as 0 and is the square we're checking to see whether or not it is attacked. The rest of the values are the values of the pieces whose deltas can attack from a given position.
+// To check if a square is attacked the formula attackingSquare - attackedSquare + 119. if the value is greater than 0 then the square can be attacked. 
+// Read more at this great resource: http://mediocrechess.blogspot.se/2006/12/guide-attacked-squares.html
+var attackArray = [
+	5, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5, 0,
+	0, 5, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 5, 0, 0,
+	0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0,
+	0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0,
+	0, 0, 0, 0, 5, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 5, 4, 6, 4, 5, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 4, 2, 1, 2, 4, 0, 0, 0, 0, 0, 0,
+	6, 6, 6, 6, 6, 6, 1, 0, 1, 6, 6, 6, 6, 6, 6, 0,
+	0, 0, 0, 0, 0, 4, 2, 1, 2, 4, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 5, 4, 6, 4, 5, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 5, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0,
+	0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0,
+	0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0,
+	0, 5, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 5, 0, 0,
+	5, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5
+],
+// The deltas neccessary to get to the center square from the attacking positions
+// Deltas for knights not necessary as they are not sliding pieces
+deltaArray = [
+	17, 0, 0, 0, 0, 0, 0,  16, 0, 0, 0, 0, 0, 0, 15, 0,
+	0, 17, 0, 0, 0, 0, 0,  16, 0, 0, 0, 0, 0, 15, 0, 0,
+	0, 0, 17, 0, 0, 0, 0,  16, 0, 0, 0, 0, 15, 0, 0, 0,
+	0, 0, 0, 17, 0, 0, 0,  16, 0, 0, 0, 15, 0, 0, 0, 0,
+	0, 0, 0, 0, 17, 0, 0,  16, 0, 0, 15, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 17, 0,  16, 0, 15, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 17,  16, 15, 0, 0, 0, 0, 0, 0, 0,
+	1, 1, 1, 1, 1, 1, 1,    0, -1, -1, -1, -1, -1, -1, -1, 0,
+	0, 0, 0, 0, 0, 0, -15, -16, -17, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, -15, 0, -16, 0, -17, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, -15, 0, 0, -16, 0, 0, -17, 0, 0, 0, 0, 0,
+	0, 0, 0, -15, 0, 0, 0, -16, 0, 0, 0, -17, 0, 0, 0, 0,
+	0, 0, -15, 0, 0, 0, 0, -16, 0, 0, 0, 0, -17, 0, 0, 0,
+	0, -15, 0, 0, 0, 0, 0, -16, 0, 0, 0, 0, 0, -17, 0, 0,
+	-15, 0, 0, 0, 0, 0, 0, -16, 0, 0, 0, 0, 0, 0, -17
+];
 
 var turn = WHITE;
 var epSquare;
