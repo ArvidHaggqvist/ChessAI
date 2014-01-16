@@ -28,30 +28,37 @@ var moveTypes = {
 var possibleAttackers = {
 	KQR: 1,
 	KQB: 2,
-	N: 4,
-	QB: 5,
-	QR: 6,
+	N: 3,
+	QB: 4,
+	QR: 5,
 };
+var pieceAttackers = [
+	['k', 'q', 'r'],
+	['k', 'q', 'b'],
+	['n'],
+	['q', 'b'],
+	['q', 'r']
+];
 
 // The central square at index 119 marked as 0 and is the square we're checking to see whether or not it is attacked. The rest of the values are the values of the pieces whose deltas can attack from a given position.
 // To check if a square is attacked the formula attackingSquare - attackedSquare + 119. if the value is greater than 0 then the square can be attacked. 
 // Read more at this great resource: http://mediocrechess.blogspot.se/2006/12/guide-attacked-squares.html
 var attackArray = [
-	5, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5, 0,
-	0, 5, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 5, 0, 0,
-	0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0,
-	0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0,
-	0, 0, 0, 0, 5, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 5, 4, 6, 4, 5, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 4, 2, 1, 2, 4, 0, 0, 0, 0, 0, 0,
-	6, 6, 6, 6, 6, 6, 1, 0, 1, 6, 6, 6, 6, 6, 6, 0,
-	0, 0, 0, 0, 0, 4, 2, 1, 2, 4, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 5, 4, 6, 4, 5, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 5, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0,
-	0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0,
-	0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0,
-	0, 5, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 5, 0, 0,
-	5, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5
+	4, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 4, 0,
+	0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 4, 0, 0,
+	0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0, 0, 4, 0, 0, 0,
+	0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 4, 0, 0, 0, 0,
+	0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 4, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 4, 3, 5, 3, 4, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 3, 2, 1, 2, 3, 0, 0, 0, 0, 0, 0,
+	5, 5, 5, 5, 5, 5, 1, 0, 1, 5, 5, 5, 5, 5, 5, 0,
+	0, 0, 0, 0, 0, 3, 2, 1, 2, 3, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 4, 3, 5, 3, 4, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 4, 0, 0, 0, 0, 0,
+	0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 4, 0, 0, 0, 0,
+	0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0, 0, 4, 0, 0, 0,
+	0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 4, 0, 0,
+	4, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 4
 ],
 // The deltas neccessary to get to the center square from the attacking positions
 // Deltas for knights not necessary as they are not sliding pieces
@@ -223,26 +230,27 @@ function generateMoves() {
 	return moves;
 }
 function isAttacked(square) {
-	var attacked = traverseBoard(function(piece, i) {
+	var attacked;
+	traverseBoard(function(piece, i) {
 		if(piece && piece.color === turn) {
-			if(attackArray[i - square + 119] > 0) {
-				if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
-					return true; // Non-sliding pieces
-				}
-				if(i === 51) {
-					console.log(deltaArray[i - square + 119]);
-				}
-				var delta = deltaArray[i - square + 119];
-				while(true) {
-					if(board[i-delta] && i-delta !== square) {
-						return false;
+			if(attackArray[i - square + 119] > 0 ) {
+				if(inArray(pieceAttackers[attackArray[i - square + 119]-1], piece.type)) {
+
+					if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
+						return true; // Non-sliding pieces
 					}
-					else {
-						if(i - delta === square) {
-							return true;
+					console.log(i);
+
+					var delta = deltaArray[i - square + 119];
+					
+					for(j=i; j !== square; j+=delta) {
+						console.log(j)
+						if(!isEmpty(j) && j !== i) {
+							attacked = false;
+							break;
 						}
-						delta += deltaArray[i - square + 119];
 					}
+					attacked = true;
 				}
 			}
 		}
@@ -291,17 +299,24 @@ function file(square) {
 function rank(square) {
 	return square >> 4;
 }
+function inArray(arr, val) {
+	for(index=0;index<arr.length;index++) {
+		if(arr[index] === val) return true;
+	}
+	return false;
+}
 
 function init() {
 	parseFEN(startingPosition);
 	putPiece({type: 'p', color: 'b'}, 81);
-	putPiece({type: 'q', color: 'w'}, 51);
+	//putPiece({type: 'q', color: 'w'}, 51);
+	putPiece({type: 'q', color: 'b'}, 32);
 	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
 	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
 	console.log(generateMoves());
 	console.log(printBoard());
 	console.log(epSquare);
 	console.log(isAttacked(81));
-	//console.log(isAttacked(99));
+	console.log(isAttacked(17));
 }
 init();
