@@ -108,6 +108,9 @@ function isOpponent(square) {
 	//return (board[square].color === turn) ? false : true;
 	return (board[square]) ? ((board[square].color === turn) ? false : true) : false;
 }
+function otherPlayer(current) {
+	return (current === WHITE) ? BLACK : WHITE;
+}
 function parseFEN(fen) {
 	var parts = fen.split(" ");
 	var boardPositions = parts[0];
@@ -232,7 +235,7 @@ function generateMoves() {
 function isAttacked(square) {
 	var attacked;
 	traverseBoard(function(piece, i) {
-		if(piece && piece.color === turn) {
+		if(piece && piece.color === otherPlayer(turn)) {
 			if(attackArray[i - square + 119] > 0 ) {
 				if(inArray(pieceAttackers[attackArray[i - square + 119]-1], piece.type)) {
 
@@ -244,7 +247,7 @@ function isAttacked(square) {
 					var delta = deltaArray[i - square + 119];
 					
 					for(j=i; j !== square; j+=delta) {
-						console.log(j)
+						console.log(j);
 						if(!isEmpty(j) && j !== i) {
 							attacked = false;
 							break;
@@ -256,12 +259,7 @@ function isAttacked(square) {
 		}
 		
 	});
-	if(attacked) {
-		return true;
-	}
-	else {
-		return false;
-	}
+	return (attacked) ? true : false;
 }
 
 function duplicateBoard(board) {
@@ -317,6 +315,7 @@ function init() {
 	console.log(printBoard());
 	console.log(epSquare);
 	console.log(isAttacked(81));
-	console.log(isAttacked(17));
+	//console.log(isAttacked(17));
+	console.log(isAttacked(22));
 }
 init();
