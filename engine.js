@@ -27,14 +27,16 @@ var moveTypes = {
 }
 var possibleAttackers = {
 	KQR: 1,
-	KQB: 2,
-	N: 3,
-	QB: 4,
-	QR: 5,
+	KQBPw: 2,
+	KQBPb: 3,
+	N: 4,
+	QB: 5,
+	QR: 6,
 };
 var pieceAttackers = [
 	['k', 'q', 'r'],
-	['k', 'q', 'b'],
+	['k', 'q', 'b', 'pw'],
+	['k', 'q', 'b', 'pb'],
 	['n'],
 	['q', 'b'],
 	['q', 'r']
@@ -44,21 +46,21 @@ var pieceAttackers = [
 // To check if a square is attacked the formula attackingSquare - attackedSquare + 119. if the value is greater than 0 then the square can be attacked. 
 // Read more at this great resource: http://mediocrechess.blogspot.se/2006/12/guide-attacked-squares.html
 var attackArray = [
-	4, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 4, 0,
-	0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 4, 0, 0,
-	0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0, 0, 4, 0, 0, 0,
-	0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 4, 0, 0, 0, 0,
-	0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 4, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 4, 3, 5, 3, 4, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 3, 2, 1, 2, 3, 0, 0, 0, 0, 0, 0,
-	5, 5, 5, 5, 5, 5, 1, 0, 1, 5, 5, 5, 5, 5, 5, 0,
-	0, 0, 0, 0, 0, 3, 2, 1, 2, 3, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 4, 3, 5, 3, 4, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 4, 0, 0, 0, 0, 0,
-	0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 4, 0, 0, 0, 0,
-	0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0, 0, 4, 0, 0, 0,
-	0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 4, 0, 0,
-	4, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 4
+	5, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5, 0,
+	0, 5, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 5, 0, 0,
+	0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0,
+	0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0,
+	0, 0, 0, 0, 5, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 5, 4, 6, 4, 5, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 4, 2, 1, 2, 4, 0, 0, 0, 0, 0, 0,
+	6, 6, 6, 6, 6, 6, 1, 0, 1, 6, 6, 6, 6, 6, 6, 0,
+	0, 0, 0, 0, 0, 4, 3, 1, 3, 4, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 5, 4, 6, 4, 5, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 5, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0,
+	0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0,
+	0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 5, 0, 0, 0,
+	0, 5, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 5, 0, 0,
+	5, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 5
 ],
 // The deltas neccessary to get to the center square from the attacking positions
 // Deltas for knights not necessary as they are not sliding pieces
@@ -172,7 +174,7 @@ function generateMoves() {
 	}
 
 	var currentPlayer = turn,
-		otherPlayer = (turn === WHITE) ? BLACK : WHITE;
+		opponent = otherPlayer(currentPlayer);
 
 	var pawnDelta = (currentPlayer === WHITE) ? pieceDeltas.pw : pieceDeltas.pb;
 
@@ -235,9 +237,9 @@ function generateMoves() {
 function isAttacked(square) {
 	var attacked;
 	traverseBoard(function(piece, i) {
-		if(piece && piece.color === otherPlayer(turn)) {
+		if(piece && piece.color === otherPlayer(board[square].color)) {
 			if(attackArray[i - square + 119] > 0 ) {
-				if(inArray(pieceAttackers[attackArray[i - square + 119]-1], piece.type)) {
+				if(inArray(pieceAttackers[attackArray[i - square + 119]-1], piece.type /*+ (piece.type === pieces.PAWN) ? piece.color : '' */) ) {
 
 					if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
 						return true; // Non-sliding pieces
@@ -307,7 +309,8 @@ function inArray(arr, val) {
 function init() {
 	parseFEN(startingPosition);
 	putPiece({type: 'p', color: 'b'}, 81);
-	//putPiece({type: 'q', color: 'w'}, 51);
+	putPiece({type: 'q', color: 'w'}, 51);
+	putPiece({type: 'q', color: 'b'}, 66);
 	putPiece({type: 'q', color: 'b'}, 32);
 	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
 	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
@@ -315,7 +318,7 @@ function init() {
 	console.log(printBoard());
 	console.log(epSquare);
 	console.log(isAttacked(81));
-	//console.log(isAttacked(17));
+	console.log(isAttacked(17));
 	console.log(isAttacked(22));
 }
 init();
