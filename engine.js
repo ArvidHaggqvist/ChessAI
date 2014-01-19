@@ -255,7 +255,9 @@ function isAttacked(square) {
 							break;
 						}
 					}
-					attacked = true;
+					if(attacked === undefined) {
+						attacked = true;
+					}
 				}
 			}
 		}
