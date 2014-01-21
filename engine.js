@@ -272,9 +272,9 @@ function isAttacked(square, attackingcolor) {
 							break;
 						}
 					}
-					if(attacked === undefined) {
+					/*if(attacked === undefined) {
 						attacked = true;
-					}
+					}*/
 				}
 			}
 		}
