@@ -243,7 +243,7 @@ function generateMoves() {
 			}
 			// Castling, queen side
 			if(!isAttacked(kingPosition-1, opponent) && isEmpty(kingPosition-1) && !isAttacked(kingPosition-2, opponent) && isEmpty(kingPosition-2) && !isAttacked(kingPosition-3, opponent) && isEmpty(kingPosition-3) && board[kingPosition-4] && board[kingPosition-4].type === pieces.ROOK) {
-				addMove(kingPosition, kingPosition+2, board[kingPosition], 'kcastling');
+				addMove(kingPosition, kingPosition-3, board[kingPosition], 'qcastling');
 			}
 		}
 	}
