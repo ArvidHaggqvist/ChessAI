@@ -232,18 +232,21 @@ function generateMoves() {
 		}
 	});
 
+	// Castling
 	var kingPosition = (currentPlayer === WHITE) ? 4 : 116;
 
-	// Castling, king side
 	if(!isEmpty(kingPosition) && board[kingPosition].type === pieces.KING) {
 		if(!isAttacked(kingPosition)) {
+			// Castling, king side
 			if(!isAttacked(kingPosition+1, opponent) && isEmpty(kingPosition+1) && !isAttacked(kingPosition+2, opponent) && isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type === pieces.ROOK) {
+				addMove(kingPosition, kingPosition+2, board[kingPosition], 'kcastling');
+			}
+			// Castling, queen side
+			if(!isAttacked(kingPosition-1, opponent) && isEmpty(kingPosition-1) && !isAttacked(kingPosition-2, opponent) && isEmpty(kingPosition-2) && !isAttacked(kingPosition-3, opponent) && isEmpty(kingPosition-3) && board[kingPosition-4] && board[kingPosition-4].type === pieces.ROOK) {
 				addMove(kingPosition, kingPosition+2, board[kingPosition], 'kcastling');
 			}
 		}
 	}
-	// Castling, queen side
-
 
 	return moves;
 }
