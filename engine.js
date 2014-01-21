@@ -163,12 +163,12 @@ function makeMove(move, chessboard) {
 function generateMoves() {
 	var moves = [];
 
-	function addMove(from, to, piece) {
+	function addMove(from, to, piece, type) {
 		var move = {
 			fromSquare: from,
 			toSquare: to,
 			piece: piece,
-			movetype: ''
+			movetype: (type) ? type : ''
 		}
 		moves.push(move);
 	}
@@ -232,25 +232,30 @@ function generateMoves() {
 		}
 	});
 
-	// Castling, king side
 	var kingPosition = (currentPlayer === WHITE) ? 4 : 116;
-	if(board[kingPosition].type === pieces.KING) {
+
+	// Castling, king side
+	if(!isEmpty(kingPosition) && board[kingPosition].type === pieces.KING) {
 		if(!isAttacked(kingPosition)) {
-			if(!isAttacked(kingPosition+1) && isEmpty(kingPosition+1) && !isAttacked(kingPosition+2) && isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type === pieces.ROOK);
+			if(!isAttacked(kingPosition+1, opponent) && isEmpty(kingPosition+1) && !isAttacked(kingPosition+2, opponent) && isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type === pieces.ROOK) {
+				addMove(kingPosition, kingPosition+2, board[kingPosition], 'kcastling');
+			}
 		}
 	}
+	// Castling, queen side
+
 
 	return moves;
 }
-function isAttacked(square) {
+function isAttacked(square, attackingcolor) {
 	var attacked;
 	traverseBoard(function(piece, i) {
-		if(piece && piece.color === otherPlayer(board[square].color)) {
+		if(piece && piece.color === attackingcolor) {
 			if(attackArray[i - square + 119] > 0 ) {
 				if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
 
 					if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
-						return true; // Non-sliding pieces
+						attacked = true; // Non-sliding pieces
 					}
 					console.log(i);
 
@@ -260,6 +265,10 @@ function isAttacked(square) {
 						console.log(j);
 						if(!isEmpty(j) && j !== i) {
 							attacked = false;
+							break;
+						}
+						if(j+delta === square) {
+							attacked = true;
 							break;
 						}
 					}
@@ -321,14 +330,19 @@ function init() {
 	putPiece({type: 'p', color: 'b'}, 81);
 	putPiece({type: 'q', color: 'w'}, 51);
 	putPiece({type: 'q', color: 'b'}, 66);
+	putPiece({type: 'q', color: 'b'}, 70);
 	putPiece({type: 'p', color: 'b'}, 32);
 	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
 	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
+	board[5] = undefined;
+	board[6] = undefined;
+	board[22] = undefined;
 	console.log(generateMoves());
 	console.log(printBoard());
 	console.log(epSquare);
-	console.log(isAttacked(81));
-	console.log(isAttacked(17));
-	console.log(isAttacked(22));
+	console.log(isAttacked(81, WHITE));
+	console.log(isAttacked(17, BLACK));
+	console.log(isAttacked(22, BLACK));
+	console.log(isAttacked(6, BLACK));
 }
 init();
