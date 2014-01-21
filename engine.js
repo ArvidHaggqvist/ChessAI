@@ -272,15 +272,12 @@ function isAttacked(square, attackingcolor) {
 							break;
 						}
 					}
-					/*if(attacked === undefined) {
-						attacked = true;
-					}*/
 				}
 			}
 		}
 		
 	});
-	return (attacked) ? true : false;
+	return attacked;
 }
 
 function duplicateBoard(board) {
