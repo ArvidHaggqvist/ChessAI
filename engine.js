@@ -84,6 +84,7 @@ deltaArray = [
 
 var turn = WHITE;
 var epSquare;
+var kingPositions = {'w': 4, 'b': 116};
 
 var board = new Array(128);
 
@@ -156,6 +157,13 @@ function makeMove(move, chessboard) {
 	else {
 		epSquare = undefined; // En-passent only legible for one move
 	}
+
+	// Update king position
+	if(move.piece.type === pieces.KING) {
+		kingPositions[move.piece.color] = to;
+	}
+
+	//Make the move
 	chessboard[from] = undefined;
 	chessboard[to] = move.piece;
 }
@@ -248,6 +256,8 @@ function generateMoves() {
 		}
 	}
 
+	var legalMoves = [];
+
 	return moves;
 }
 function isAttacked(square, attackingcolor) {
@@ -282,7 +292,21 @@ function isAttacked(square, attackingcolor) {
 	});
 	return attacked;
 }
-
+function checkLegal(moves, color) {
+	moves.forEach(function(m) {
+		var boardCopy = duplicateBoard(board);
+		makeMove(m, boardCopy);
+		
+	});
+}
+function inCheck(color) {
+	if(isAttacked(kingPositions[color])) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 function duplicateBoard(board) {
 	var newBoard = new Array(128);
 	traverseBoard(function(square, i) {
