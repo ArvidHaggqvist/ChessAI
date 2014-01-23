@@ -334,9 +334,12 @@ function init() {
 	putPiece({type: 'p', color: 'b'}, 32);
 	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
 	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
-	board[5] = undefined;
-	board[6] = undefined;
-	board[22] = undefined;
+	//board[5] = undefined;
+	//board[6] = undefined;
+	//board[22] = undefined;
+	board[1] = undefined;
+	board[2] = undefined;
+	board[3] = undefined;
 	console.log(generateMoves());
 	console.log(printBoard());
 	console.log(epSquare);
