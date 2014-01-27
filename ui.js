@@ -3,7 +3,7 @@
 	var gamediv = $(".game");
 
 	// Generate board
-	traverseBoard(function(square, index) {
+	playboard.traverse(function(square, index) {
 		gamediv.append("<div class='square " + index + "'>" + ((square !== undefined) ? square.type : '') + "</div>");
 	});
 	$(".square").each(function() {

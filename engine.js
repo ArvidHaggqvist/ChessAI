@@ -90,250 +90,251 @@ var board = new Array(128);
 
 var startingPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
-function traverseBoard(action) {
-	for(i=0;i<board.length;i++) {
-		if(i & 0x88) {
-			i+=7;
-		}
-		else {
-			action(board[i], i);
-		}
-	}
-}
+function Board(positions) {
 
-function putPiece(piece, square) {
-	board[square] = piece;
-}
-function isEmpty(square) {
-	return (board[square]) ? false : true;
-}
-function isOpponent(square) {
-	//return (board[square].color === turn) ? false : true;
-	return (board[square]) ? ((board[square].color === turn) ? false : true) : false;
-}
-function otherPlayer(current) {
-	return (current === WHITE) ? BLACK : WHITE;
-}
-function parseFEN(fen) {
-	var parts = fen.split(" ");
-	var boardPositions = parts[0];
-
-	function handlePiece(pieceString) {
-		var piece = {
-			type: pieceString.toLowerCase(),
-			color: ( pieceString.toLowerCase() === pieceString ) ? WHITE : BLACK
-		}
-		return piece;
-	}
-	var boardIndex = 0;
-	for(i=0; i<boardPositions.length; i++) {
-		var character = boardPositions[i];
-		
-		if(character === '/') {
-			boardIndex += 8;
-		}
-		else if(!isNaN(character)) {
-			boardIndex += parseInt(character);
-		}
-		else {
-			board[boardIndex] = handlePiece(character);
-			boardIndex++;
-		}
-	}
-	console.log(board);
-}
-function makeMove(move, chessboard) {
-
-	if(!chessboard) {
-		chessboard = board;
-	}
-	var from = move.fromSquare,
-		to = move.toSquare;
-
-	// If move is a pawn double move, set the enpassent square
-	if(Math.abs(to - from) === 32 && move.piece.type === pieces.PAWN) {
-		epSquare = (to < from) ? from - 16 : from + 16;
-	}
-	else {
-		epSquare = undefined; // En-passent only legible for one move
-	}
-
-	// Update king position
-	if(move.piece.type === pieces.KING) {
-		kingPositions[move.piece.color] = to;
-	}
-
-	//Make the move
-	chessboard[from] = undefined;
-	chessboard[to] = move.piece;
-}
-
-function generateMoves() {
-	var moves = [];
-
-	function addMove(from, to, piece, type) {
-		var move = {
-			fromSquare: from,
-			toSquare: to,
-			piece: piece,
-			movetype: (type) ? type : ''
-		}
-		moves.push(move);
-	}
-
-	var currentPlayer = turn,
-		opponent = otherPlayer(currentPlayer);
-
-	var pawnDelta = (currentPlayer === WHITE) ? pieceDeltas.pw : pieceDeltas.pb;
-
-	traverseBoard(function(val, i) {
-		var piece = val;
-
-		if(piece && piece.color === currentPlayer) {
-
-			if(piece.type === pieces.PAWN) {
-				// One square ahead, doesn't need 0x88 checking as pawn will become another piece before moving off board
-				if(isEmpty(i+pawnDelta[0])) {
-					addMove(i, i+pawnDelta[0], val);
-				}
-				// Two square move
-				if(rank(i)+1 === 2 || rank(i)+1 === 7 ) {
-					if(isEmpty(i+pawnDelta[0])) {
-						if(!(i+pawnDelta[1] & 0x88)) {
-							addMove(i, i+pawnDelta[1], val);
-						}
-					}
-				}
-				// Pawn capture
-				for(j=2; j<4; j++) {
-					if(!(i+pawnDelta[j] & 0x88) && board[i+pawnDelta[j]] !== undefined && board[i+pawnDelta[j]].color === otherPlayer) {
-						addMove(i, i+pawnDelta[j], val);
-					}
-				}
+	this.board = positions || new Array(128);
+	this.traverse = function(action) {
+		for(i=0;i<this.board.length;i++) {
+			if(i & 0x88) {
+				i+=7;
 			}
 			else {
-				var deltas = pieceDeltas[piece.type];
-				for(k=0; k<deltas.length; k++) {
-					var delta = deltas[k];
-					
-					while(!(i+delta & 0x88)) {
-						if(!isEmpty(i+delta) && !isOpponent(i+delta)) {
-							break;
+				action(this.board[i], i);
+			}
+		}
+	};
+	this.putPiece = function(piece, square) {
+		this.board[square] = piece;
+	};
+	this.isEmpty = function(square) {
+		return (this.board[square]) ? false : true;
+	};
+	this.isOpponent = function(square) {
+		return (this.board[square]) ? ((this.board[square].color === turn) ? false : true) : false;
+	};
+	this.parseFEN = function(fen) {
+		var parts = fen.split(" ");
+		var boardPositions = parts[0];
+
+		function handlePiece(pieceString) {
+			var piece = {
+				type: pieceString.toLowerCase(),
+				color: ( pieceString.toLowerCase() === pieceString ) ? WHITE : BLACK
+			}
+			return piece;
+		}
+		var boardIndex = 0;
+		for(i=0; i<boardPositions.length; i++) {
+			var character = boardPositions[i];
+			
+			if(character === '/') {
+				boardIndex += 8;
+			}
+			else if(!isNaN(character)) {
+				boardIndex += parseInt(character);
+			}
+			else {
+				this.board[boardIndex] = handlePiece(character);
+				boardIndex++;
+			}
+		}
+		console.log(this.board);
+	};
+	this.isEmpty = function(square) {
+		return (this.board[square]) ? false : true;
+	};
+	this.isOpponent = function(square) {
+		return (this.board[square]) ? ((this.board[square].color === turn) ? false : true) : false;
+	}
+	this.makeMove = function(move) {
+
+		var from = move.fromSquare,
+			to = move.toSquare;
+
+		// If move is a pawn double move, set the enpassent square
+		if(Math.abs(to - from) === 32 && move.piece.type === pieces.PAWN) {
+			epSquare = (to < from) ? from - 16 : from + 16;
+		}
+		else {
+			epSquare = undefined; // En-passent only legible for one move
+		}
+
+		// Update king position
+		if(move.piece.type === pieces.KING) {
+			kingPositions[move.piece.color] = to;
+		}
+
+		//Make the move
+		this.board[from] = undefined;
+		this.board[to] = move.piece;
+	};
+	this.generateMoves = function() {
+		var self = this;
+		var moves = [];
+
+		function addMove(from, to, piece, type) {
+			var move = {
+				fromSquare: from,
+				toSquare: to,
+				piece: piece,
+				movetype: (type) ? type : ''
+			}
+			moves.push(move);
+		}
+
+		var currentPlayer = turn,
+			opponent = otherPlayer(currentPlayer);
+
+		var pawnDelta = (currentPlayer === WHITE) ? pieceDeltas.pw : pieceDeltas.pb;
+
+		this.traverse(function(val, i) {
+			var piece = val;
+
+			if(piece && piece.color === currentPlayer) {
+
+				if(piece.type === pieces.PAWN) {
+					// One square ahead, doesn't need 0x88 checking as pawn will become another piece before moving off board
+					if(self.isEmpty(i+pawnDelta[0])) {
+						addMove(i, i+pawnDelta[0], val);
+					}
+					// Two square move
+					if(rank(i)+1 === 2 || rank(i)+1 === 7 ) {
+						if(self.isEmpty(i+pawnDelta[0])) {
+							if(!(i+pawnDelta[1] & 0x88)) {
+								addMove(i, i+pawnDelta[1], val);
+							}
 						}
-						else {
-							if(isOpponent(i+delta)) {
-								addMove(i, i+delta, val);
+					}
+					// Pawn capture
+					for(j=2; j<4; j++) {
+						if(!(i+pawnDelta[j] & 0x88) && self.board[i+pawnDelta[j]] !== undefined && self.board[i+pawnDelta[j]].color === otherPlayer) {
+							addMove(i, i+pawnDelta[j], val);
+						}
+					}
+				}
+				else {
+					var deltas = pieceDeltas[piece.type];
+					for(k=0; k<deltas.length; k++) {
+						var delta = deltas[k];
+						
+						while(!(i+delta & 0x88)) {
+							if(!self.isEmpty(i+delta) && !self.isOpponent(i+delta)) {
 								break;
 							}
 							else {
-								addMove(i, i+delta, val);
-								if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
-									break; //Non-sliding pieces only invoke their deltas once
+								if(self.isOpponent(i+delta)) {
+									addMove(i, i+delta, val);
+									break;
 								}
-								delta += deltas[k];
+								else {
+									addMove(i, i+delta, val);
+									if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
+										break; //Non-sliding pieces only invoke their deltas once
+									}
+									delta += deltas[k];
+								}
+							}
+						}
+					}
+				}
+
+			}
+		});
+
+		// Castling
+		var kingPosition = (currentPlayer === WHITE) ? 4 : 116;
+
+		if(!this.isEmpty(kingPosition) && this.board[kingPosition].type === pieces.KING) {
+			if(!this.isAttacked(kingPosition)) {
+				var board = this.board;
+				// Castling, king side
+				if(!this.isAttacked(kingPosition+1, opponent) && this.isEmpty(kingPosition+1) && !this.isAttacked(kingPosition+2, opponent) && this.isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type === pieces.ROOK) {
+					addMove(kingPosition, kingPosition+2, board[kingPosition], 'kcastling');
+				}
+				// Castling, queen side
+				if(!this.isAttacked(kingPosition-1, opponent) && this.isEmpty(kingPosition-1) && !this.isAttacked(kingPosition-2, opponent) && this.isEmpty(kingPosition-2) && !this.isAttacked(kingPosition-3, opponent) && this.isEmpty(kingPosition-3) && board[kingPosition-4] && board[kingPosition-4].type === pieces.ROOK) {
+					addMove(kingPosition, kingPosition-3, board[kingPosition], 'qcastling');
+				}
+			}
+		}
+
+		var legalMoves = [];
+
+		return moves;
+	};
+
+	this.isAttacked = function(square, attackingcolor) {
+		var self = this;
+		var attacked;
+		this.traverse(function(piece, i) {
+			if(piece && piece.color === attackingcolor) {
+				if(attackArray[i - square + 119] > 0 ) {
+					if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
+
+						if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
+							attacked = true; // Non-sliding pieces
+						}
+						console.log(i);
+
+						var delta = deltaArray[i - square + 119];
+						
+						for(j=i; j !== square; j+=delta) {
+							console.log(j);
+							if(!self.isEmpty(j) && j !== i) {
+								attacked = false;
+								break;
+							}
+							if(j+delta === square) {
+								attacked = true;
+								break;
 							}
 						}
 					}
 				}
 			}
+			
+		});
+		return attacked;
+	};
 
-		}
-	});
-
-	// Castling
-	var kingPosition = (currentPlayer === WHITE) ? 4 : 116;
-
-	if(!isEmpty(kingPosition) && board[kingPosition].type === pieces.KING) {
-		if(!isAttacked(kingPosition)) {
-			// Castling, king side
-			if(!isAttacked(kingPosition+1, opponent) && isEmpty(kingPosition+1) && !isAttacked(kingPosition+2, opponent) && isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type === pieces.ROOK) {
-				addMove(kingPosition, kingPosition+2, board[kingPosition], 'kcastling');
-			}
-			// Castling, queen side
-			if(!isAttacked(kingPosition-1, opponent) && isEmpty(kingPosition-1) && !isAttacked(kingPosition-2, opponent) && isEmpty(kingPosition-2) && !isAttacked(kingPosition-3, opponent) && isEmpty(kingPosition-3) && board[kingPosition-4] && board[kingPosition-4].type === pieces.ROOK) {
-				addMove(kingPosition, kingPosition-3, board[kingPosition], 'qcastling');
-			}
-		}
-	}
-
-	var legalMoves = [];
-
-	return moves;
-}
-function isAttacked(square, attackingcolor) {
-	var attacked;
-	traverseBoard(function(piece, i) {
-		if(piece && piece.color === attackingcolor) {
-			if(attackArray[i - square + 119] > 0 ) {
-				if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
-
-					if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
-						attacked = true; // Non-sliding pieces
-					}
-					console.log(i);
-
-					var delta = deltaArray[i - square + 119];
-					
-					for(j=i; j !== square; j+=delta) {
-						console.log(j);
-						if(!isEmpty(j) && j !== i) {
-							attacked = false;
-							break;
-						}
-						if(j+delta === square) {
-							attacked = true;
-							break;
-						}
-					}
-				}
-			}
-		}
-		
-	});
-	return attacked;
-}
-function checkLegal(moves, color) {
-	moves.forEach(function(m) {
-		var boardCopy = duplicateBoard(board);
-		makeMove(m, boardCopy);
-		
-	});
-}
-function inCheck(color) {
-	if(isAttacked(kingPositions[color])) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-function duplicateBoard(board) {
-	var newBoard = new Array(128);
-	traverseBoard(function(square, i) {
-		newBoard[i] = square;
-	});
-	return newBoard;
-}
-
-function printBoard() {
-	var separator = '   +-------------------------+\n';
-	var boardString = separator + ' 1 |';
-
-	traverseBoard(function(val, i) {
-		if(i%8===0 && i !== 0) {
-			boardString += ' | \n ' + '12345678'[rank(i)] + ' |';
-		}
-		if(val !== undefined) {
-			(val.color === BLACK) ? boardString +=  ' ' + val.type.toUpperCase() + ' ' : boardString +=  ' ' + val.type + ' ';
+	this.duplicate = function() {
+		var newBoard = new Array(128);
+		this.traverse(function(square, i) {
+			newBoard[i] = square;
+		});
+		return new Board(newBoard);
+	};
+	this.inCheck = function(color) {
+		if(this.isAttacked(kingPositions[color])) {
+			return true;
 		}
 		else {
-			boardString += ' . ';
+			return false;
 		}
+	};
 
-	});
-	boardString += ' |\n' + separator;
-	boardString += '     a  b  c  d  e  f  g  h';
-	return boardString;
+	this.print = function() {
+		var separator = '   +-------------------------+\n';
+		var boardString = separator + ' 1 |';
+
+		this.traverse(function(val, i) {
+			if(i%8===0 && i !== 0) {
+				boardString += ' | \n ' + '12345678'[rank(i)] + ' |';
+			}
+			if(val !== undefined) {
+				(val.color === BLACK) ? boardString +=  ' ' + val.type.toUpperCase() + ' ' : boardString +=  ' ' + val.type + ' ';
+			}
+			else {
+				boardString += ' . ';
+			}
+
+		});
+		boardString += ' |\n' + separator;
+		boardString += '     a  b  c  d  e  f  g  h';
+		return boardString;
+	};
+
+
 }
 
 function file(square) {
@@ -348,28 +349,38 @@ function inArray(arr, val) {
 	}
 	return false;
 }
+function otherPlayer(current) {
+	return (current === WHITE) ? BLACK : WHITE;
+}
+/*function isEmpty(square) {
+	return (board[square]) ? false : true;
+}
+function isOpponent(square) {
+	//return (board[square].color === turn) ? false : true;
+	return (board[square]) ? ((board[square].color === turn) ? false : true) : false;
+}*/
 
-function init() {
-	parseFEN(startingPosition);
-	putPiece({type: 'p', color: 'b'}, 81);
-	putPiece({type: 'q', color: 'w'}, 51);
-	putPiece({type: 'q', color: 'b'}, 66);
-	putPiece({type: 'q', color: 'b'}, 70);
-	putPiece({type: 'p', color: 'b'}, 32);
-	makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
-	makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
+
+	var playboard = new Board(new Array(128));
+	console.log(playboard);
+	playboard.parseFEN(startingPosition);
+	playboard.putPiece({type: 'p', color: 'b'}, 81);
+	playboard.putPiece({type: 'q', color: 'w'}, 51);
+	playboard.putPiece({type: 'q', color: 'b'}, 66);
+	playboard.putPiece({type: 'q', color: 'b'}, 70);
+	playboard.putPiece({type: 'p', color: 'b'}, 32);
+	playboard.makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
+	playboard.makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
 	//board[5] = undefined;
 	//board[6] = undefined;
 	//board[22] = undefined;
-	board[1] = undefined;
-	board[2] = undefined;
-	board[3] = undefined;
-	console.log(generateMoves());
-	console.log(printBoard());
+	playboard.board[1] = undefined;
+	playboard.board[2] = undefined;
+	playboard.board[3] = undefined;
+	console.log(playboard.generateMoves());
+	console.log(playboard.print());
 	console.log(epSquare);
-	console.log(isAttacked(81, WHITE));
-	console.log(isAttacked(17, BLACK));
-	console.log(isAttacked(22, BLACK));
-	console.log(isAttacked(6, BLACK));
-}
-init();
+	console.log(playboard.isAttacked(81, WHITE));
+	console.log(playboard.isAttacked(17, BLACK));
+	console.log(playboard.isAttacked(22, BLACK));
+	console.log(playboard.isAttacked(6, BLACK));
