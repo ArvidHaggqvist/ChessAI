@@ -352,35 +352,28 @@ function inArray(arr, val) {
 function otherPlayer(current) {
 	return (current === WHITE) ? BLACK : WHITE;
 }
-/*function isEmpty(square) {
-	return (board[square]) ? false : true;
-}
-function isOpponent(square) {
-	//return (board[square].color === turn) ? false : true;
-	return (board[square]) ? ((board[square].color === turn) ? false : true) : false;
-}*/
 
 
-	var playboard = new Board(new Array(128));
-	console.log(playboard);
-	playboard.parseFEN(startingPosition);
-	playboard.putPiece({type: 'p', color: 'b'}, 81);
-	playboard.putPiece({type: 'q', color: 'w'}, 51);
-	playboard.putPiece({type: 'q', color: 'b'}, 66);
-	playboard.putPiece({type: 'q', color: 'b'}, 70);
-	playboard.putPiece({type: 'p', color: 'b'}, 32);
-	playboard.makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
-	playboard.makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
-	//board[5] = undefined;
-	//board[6] = undefined;
-	//board[22] = undefined;
-	playboard.board[1] = undefined;
-	playboard.board[2] = undefined;
-	playboard.board[3] = undefined;
-	console.log(playboard.generateMoves());
-	console.log(playboard.print());
-	console.log(epSquare);
-	console.log(playboard.isAttacked(81, WHITE));
-	console.log(playboard.isAttacked(17, BLACK));
-	console.log(playboard.isAttacked(22, BLACK));
-	console.log(playboard.isAttacked(6, BLACK));
+var playboard = new Board(new Array(128));
+console.log(playboard);
+playboard.parseFEN(startingPosition);
+playboard.putPiece({type: 'p', color: 'b'}, 81);
+playboard.putPiece({type: 'q', color: 'w'}, 51);
+playboard.putPiece({type: 'q', color: 'b'}, 66);
+playboard.putPiece({type: 'q', color: 'b'}, 70);
+playboard.putPiece({type: 'p', color: 'b'}, 32);
+playboard.makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
+playboard.makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
+//board[5] = undefined;
+//board[6] = undefined;
+//board[22] = undefined;
+playboard.board[1] = undefined;
+playboard.board[2] = undefined;
+playboard.board[3] = undefined;
+console.log(playboard.generateMoves());
+console.log(playboard.print());
+console.log(epSquare);
+console.log(playboard.isAttacked(81, WHITE));
+console.log(playboard.isAttacked(17, BLACK));
+console.log(playboard.isAttacked(22, BLACK));
+console.log(playboard.isAttacked(6, BLACK));
