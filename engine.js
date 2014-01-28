@@ -265,13 +265,13 @@ function Board(positions) {
 
 	this.isAttacked = function(square, attackingcolor) {
 		var self = this;
-		var attacked;
+		/*var attacked;
 		this.traverse(function(piece, i) {
 			if(piece && piece.color === attackingcolor) {
 				if(attackArray[i - square + 119] > 0 ) {
 					if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
 
-						if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
+						if(piece.type === pieces.KING || piece.type === pieces.KNIGHT || piece.type === pieces.PAWN) {
 							attacked = true; // Non-sliding pieces
 						}
 						console.log(i);
@@ -289,12 +289,45 @@ function Board(positions) {
 								break;
 							}
 						}
+						if(attacked) return attacked;
 					}
 				}
 			}
 			
 		});
-		return attacked;
+		return attacked;*/
+		for(i=0; i<this.board.length; i++) {
+			if(i & 0x88) {
+				i+= 7
+			}
+			else {
+				var piece = this.board[i];
+				if(piece && piece.color === attackingcolor) {
+					if(attackArray[i - square + 119] > 0 ) {
+						if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
+
+							if(piece.type === pieces.KING || piece.type === pieces.KNIGHT || piece.type === pieces.PAWN) {		
+								 return true; // Non-sliding pieces
+							}
+							console.log(i);
+
+							var delta = deltaArray[i - square + 119];
+							
+							for(j=i; j !== square; j+=delta) {
+								console.log(j);
+								if(!self.isEmpty(j) && j !== i) {
+									break;
+								}
+								if(j+delta === square) {
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
 	};
 
 	this.duplicate = function() {
@@ -305,7 +338,8 @@ function Board(positions) {
 		return new Board(newBoard);
 	};
 	this.inCheck = function(color) {
-		if(this.isAttacked(kingPositions[color])) {
+		console.log(kingPositions[color]);
+		if(this.isAttacked(kingPositions[color], otherPlayer(color))) {
 			return true;
 		}
 		else {
@@ -377,3 +411,18 @@ console.log(playboard.isAttacked(81, WHITE));
 console.log(playboard.isAttacked(17, BLACK));
 console.log(playboard.isAttacked(22, BLACK));
 console.log(playboard.isAttacked(6, BLACK));
+
+/* Some tests */
+
+var testboard = playboard.duplicate();
+
+console.log("\n \n Some very primitive testing");
+testboard.makeMove({fromSquare: 4, toSquare: 67, piece: {type: 'k', color: 'w'}, movetype: ''});
+testboard.putPiece({type: 'p', color: 'b'}, 37);
+console.log(kingPositions[WHITE]);
+console.log(testboard.print());
+console.log(attackArray[118]);
+console.log(testboard.inCheck(WHITE));
+//console.log(testboard.isAttacked(67, BLACK));
+console.log(testboard.isAttacked(37, WHITE));
+
