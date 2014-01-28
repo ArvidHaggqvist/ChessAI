@@ -337,6 +337,16 @@ function Board(positions) {
 		});
 		return new Board(newBoard);
 	};
+	this.checkLegal = function(moves, color) {
+		var legal = [];
+		moves.forEach(function(move) {
+			var b = this.duplicate();
+			if(!b.inCheck(color)) {
+				legal.push(move);
+			}
+		});
+		return legal;
+	};
 	this.inCheck = function(color) {
 		console.log(kingPositions[color]);
 		if(this.isAttacked(kingPositions[color], otherPlayer(color))) {
