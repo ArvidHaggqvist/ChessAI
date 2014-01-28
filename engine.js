@@ -84,7 +84,7 @@ deltaArray = [
 
 var turn = WHITE;
 var epSquare;
-var kingPositions = {'w': 4, 'b': 116};
+//var kingPositions = {'w': 4, 'b': 116};
 
 var board = new Array(128);
 
@@ -93,6 +93,9 @@ var startingPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 function Board(positions) {
 
 	this.board = positions || new Array(128);
+
+	this.kingPositions = {'w': 4, 'b': 116};
+
 	this.traverse = function(action) {
 		for(i=0;i<this.board.length;i++) {
 			if(i & 0x88) {
@@ -161,7 +164,7 @@ function Board(positions) {
 
 		// Update king position
 		if(move.piece.type === pieces.KING) {
-			kingPositions[move.piece.color] = to;
+			this.kingPositions[move.piece.color] = to;
 		}
 
 		//Make the move
@@ -258,9 +261,9 @@ function Board(positions) {
 			}
 		}
 
-		var legalMoves = [];
+		var legalMoves = this.checkLegal(moves);
 
-		return moves;
+		return legalMoves;
 	};
 
 	this.isAttacked = function(square, attackingcolor) {
@@ -337,10 +340,11 @@ function Board(positions) {
 		});
 		return new Board(newBoard);
 	};
-	this.checkLegal = function(moves, color) {
+	this.checkLegal = function(moves, color) {	
+		var self = this;
 		var legal = [];
 		moves.forEach(function(move) {
-			var b = this.duplicate();
+			var b = self.duplicate();
 			if(!b.inCheck(color)) {
 				legal.push(move);
 			}
@@ -348,8 +352,7 @@ function Board(positions) {
 		return legal;
 	};
 	this.inCheck = function(color) {
-		console.log(kingPositions[color]);
-		if(this.isAttacked(kingPositions[color], otherPlayer(color))) {
+		if(this.isAttacked(this.kingPositions[color], otherPlayer(color))) {
 			return true;
 		}
 		else {
@@ -429,9 +432,8 @@ var testboard = playboard.duplicate();
 console.log("\n \n Some very primitive testing");
 testboard.makeMove({fromSquare: 4, toSquare: 67, piece: {type: 'k', color: 'w'}, movetype: ''});
 testboard.putPiece({type: 'p', color: 'b'}, 37);
-console.log(kingPositions[WHITE]);
+console.log(testboard.kingPositions[WHITE]);
 console.log(testboard.print());
-console.log(attackArray[118]);
 console.log(testboard.inCheck(WHITE));
 //console.log(testboard.isAttacked(67, BLACK));
 console.log(testboard.isAttacked(37, WHITE));
