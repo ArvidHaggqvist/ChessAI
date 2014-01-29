@@ -267,38 +267,7 @@ function Board(positions) {
 	};
 
 	this.isAttacked = function(square, attackingcolor) {
-		var self = this;
-		/*var attacked;
-		this.traverse(function(piece, i) {
-			if(piece && piece.color === attackingcolor) {
-				if(attackArray[i - square + 119] > 0 ) {
-					if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
-
-						if(piece.type === pieces.KING || piece.type === pieces.KNIGHT || piece.type === pieces.PAWN) {
-							attacked = true; // Non-sliding pieces
-						}
-						console.log(i);
-
-						var delta = deltaArray[i - square + 119];
-						
-						for(j=i; j !== square; j+=delta) {
-							console.log(j);
-							if(!self.isEmpty(j) && j !== i) {
-								attacked = false;
-								break;
-							}
-							if(j+delta === square) {
-								attacked = true;
-								break;
-							}
-						}
-						if(attacked) return attacked;
-					}
-				}
-			}
-			
-		});
-		return attacked;*/
+		
 		for(i=0; i<this.board.length; i++) {
 			if(i & 0x88) {
 				i+= 7
@@ -318,7 +287,7 @@ function Board(positions) {
 							
 							for(j=i; j !== square; j+=delta) {
 								console.log(j);
-								if(!self.isEmpty(j) && j !== i) {
+								if(!this.isEmpty(j) && j !== i) {
 									break;
 								}
 								if(j+delta === square) {
@@ -404,32 +373,31 @@ function otherPlayer(current) {
 var playboard = new Board(new Array(128));
 console.log(playboard);
 playboard.parseFEN(startingPosition);
-playboard.putPiece({type: 'p', color: 'b'}, 81);
-playboard.putPiece({type: 'q', color: 'w'}, 51);
-playboard.putPiece({type: 'q', color: 'b'}, 66);
-playboard.putPiece({type: 'q', color: 'b'}, 70);
-playboard.putPiece({type: 'p', color: 'b'}, 32);
-playboard.makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
-playboard.makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
-//board[5] = undefined;
-//board[6] = undefined;
-//board[22] = undefined;
-playboard.board[1] = undefined;
-playboard.board[2] = undefined;
-playboard.board[3] = undefined;
-console.log(playboard.generateMoves());
-console.log(playboard.print());
-console.log(epSquare);
-console.log(playboard.isAttacked(81, WHITE));
-console.log(playboard.isAttacked(17, BLACK));
-console.log(playboard.isAttacked(22, BLACK));
-console.log(playboard.isAttacked(6, BLACK));
 
 /* Some tests */
 
 var testboard = playboard.duplicate();
 
 console.log("\n \n Some very primitive testing");
+testboard.putPiece({type: 'p', color: 'b'}, 81);
+testboard.putPiece({type: 'q', color: 'w'}, 51);
+testboard.putPiece({type: 'q', color: 'b'}, 66);
+testboard.putPiece({type: 'q', color: 'b'}, 70);
+testboard.putPiece({type: 'p', color: 'b'}, 32);
+testboard.makeMove({fromSquare: 16, toSquare: 48, piece: {type: 'p', color: 'w'}, movetype: ''});
+testboard.makeMove({fromSquare: 96, toSquare: 64, piece: {type: 'p', color: 'b'}, movetype: ''});
+
+testboard.board[1] = undefined;
+testboard.board[2] = undefined;
+testboard.board[3] = undefined;
+console.log(testboard.generateMoves());
+console.log(testboard.print());
+console.log(epSquare);
+console.log(testboard.isAttacked(81, WHITE));
+console.log(testboard.isAttacked(17, BLACK));
+console.log(testboard.isAttacked(22, BLACK));
+console.log(testboard.isAttacked(6, BLACK));
+
 testboard.makeMove({fromSquare: 4, toSquare: 67, piece: {type: 'k', color: 'w'}, movetype: ''});
 testboard.putPiece({type: 'p', color: 'b'}, 37);
 console.log(testboard.kingPositions[WHITE]);
