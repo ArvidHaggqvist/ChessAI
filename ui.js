@@ -4,10 +4,10 @@
 
 	// Generate board
 	playboard.traverse(function(square, index) {
-		gamediv.append("<div class='square " + index + "'>" + ((square !== undefined) ? ((square.color === WHITE) ? square.type : square.type.toUpperCase()) : '') + "</div>");
+		gamediv.append("<div class='square' data-id=' " + index + "'>" + ((square !== undefined) ? ((square.color === WHITE) ? square.type : square.type.toUpperCase()) : '') + "</div>");
 	});
 	$(".square").each(function() {
-		var boardIndex = $(this).attr('class').split(" ")[1];
+		var boardIndex = parseInt($(this).attr('data-id'));
 		if(rank(boardIndex) % 2 === 0 ) {
 			if(boardIndex % 2 !== 0) {
 				$(this).addClass('black');
