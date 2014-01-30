@@ -83,10 +83,7 @@ deltaArray = [
 ];
 
 var turn = WHITE;
-var epSquare;
-//var kingPositions = {'w': 4, 'b': 116};
-
-var board = new Array(128);
+//var epSquare;
 
 var startingPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -95,6 +92,8 @@ function Board(positions) {
 	this.board = positions || new Array(128);
 
 	this.kingPositions = {'w': 4, 'b': 116};
+
+	this.epSquare;
 
 	this.traverse = function(action) {
 		for(i=0;i<this.board.length;i++) {
@@ -156,10 +155,10 @@ function Board(positions) {
 
 		// If move is a pawn double move, set the enpassent square
 		if(Math.abs(to - from) === 32 && move.piece.type === pieces.PAWN) {
-			epSquare = (to < from) ? from - 16 : from + 16;
+			this.epSquare = (to < from) ? from - 16 : from + 16;
 		}
 		else {
-			epSquare = undefined; // En-passent only legible for one move
+			this.epSquare = undefined; // En-passent only legible for one move
 		}
 
 		// Update king position
@@ -392,7 +391,7 @@ testboard.board[2] = undefined;
 testboard.board[3] = undefined;
 console.log(testboard.generateMoves());
 console.log(testboard.print());
-console.log(epSquare);
+console.log(testboard.epSquare);
 console.log(testboard.isAttacked(81, WHITE));
 console.log(testboard.isAttacked(17, BLACK));
 console.log(testboard.isAttacked(22, BLACK));
@@ -403,6 +402,5 @@ testboard.putPiece({type: 'p', color: 'b'}, 37);
 console.log(testboard.kingPositions[WHITE]);
 console.log(testboard.print());
 console.log(testboard.inCheck(WHITE));
-//console.log(testboard.isAttacked(67, BLACK));
 console.log(testboard.isAttacked(37, WHITE));
 

@@ -19,6 +19,22 @@
 			}
 		}
 	});
+	/*var availableMoves = [];
+
+	function playerTurn() {
+		availableMoves = playboard.generateMoves();
+	}
+	playerTurn();
+
+	$(".square").on('click', function() {
+		if(turn === WHITE) {
+			availableMoves.forEach(function(move) {
+				if( $this.attr(class).split(" ")[1] === move.fromSquare ) {
+
+				}
+			});
+		}
+	});*/
 
 
 })($);
