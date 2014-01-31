@@ -372,6 +372,7 @@ function otherPlayer(current) {
 var playboard = new Board(new Array(128));
 console.log(playboard);
 playboard.parseFEN(startingPosition);
+console.log(playboard.generateMoves());
 
 /* Some tests */
 

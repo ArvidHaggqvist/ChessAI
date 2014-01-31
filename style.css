@@ -12,3 +12,6 @@
 .black {
 	background: #333;
 }
+.highlight {
+	background: blue !important;
+}
