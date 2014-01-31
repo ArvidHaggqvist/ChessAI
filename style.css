@@ -13,5 +13,8 @@
 	background: #333;
 }
 .highlight {
-	background: blue !important;
+	width: 58px;
+	height: 58px;
+	background: blue;
+	border: 1px solid white;
 }

@@ -28,11 +28,12 @@
 	playerTurn();
 
 	$(".square").on('click', function() {
+		$(".highlight").removeClass('highlight');
 		var self = $(this);
 		if(turn === WHITE) {
+			self.addClass('highlight');
 			availableMoves.forEach(function(move) {
 				if( parseInt(self.attr('data-id')) === move.fromSquare ) {
-					self.addClass('highlight');
 					$(".square[data-id='" + move.toSquare + "']").addClass('highlight');
 				}
 			});
