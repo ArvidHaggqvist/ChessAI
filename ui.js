@@ -2,6 +2,20 @@
 
 	var gamediv = $(".game");
 
+	var ui = {
+		move: function(from, to) {
+			console.log("invoked");
+			var fromSquare = $(".square[data-id='" + from + "']");
+			var piece = fromSquare.text();
+			fromSquare.text("");
+			$(".square[data-id='" + to + "']").text(piece);
+			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: (piece.toUpperCase() === piece) ? BLACK : WHITE}};
+			playboard.makeMove(move);
+			console.log(playboard.print());
+			playerTurn();
+		}
+	};
+
 	// Generate board
 	playboard.traverse(function(square, index) {
 		gamediv.append("<div class='square' data-id='" + index + "'>" + ((square !== undefined) ? ((square.color === WHITE) ? square.type : square.type.toUpperCase()) : '') + "</div>");
@@ -28,15 +42,23 @@
 	playerTurn();
 
 	$(".square").on('click', function() {
-		$(".highlight").removeClass('highlight');
-		var self = $(this);
-		if(turn === WHITE) {
-			self.addClass('highlight');
-			availableMoves.forEach(function(move) {
-				if( parseInt(self.attr('data-id')) === move.fromSquare ) {
-					$(".square[data-id='" + move.toSquare + "']").addClass('highlight');
-				}
-			});
+		if($(this).hasClass('highlight')) {
+			ui.move($(".selected").attr('data-id'), $(this).attr('data-id'));
+			$(".highlight").removeClass("highlight");
+		}
+		else {
+			$(".highlight").removeClass('highlight');
+			$(".selected").removeClass('selected');
+			var self = $(this);
+			if(turn === WHITE) {
+				self.addClass('highlight');
+				self.addClass('selected');
+				availableMoves.forEach(function(move) {
+					if( parseInt(self.attr('data-id')) === move.fromSquare ) {
+						$(".square[data-id='" + move.toSquare + "']").addClass('highlight');
+					}
+				});
+			}
 		}
 	});
 
