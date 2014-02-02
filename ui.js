@@ -1,4 +1,4 @@
-(function(jQuery, undefined) {
+//(function(jQuery, undefined) {
 
 	var gamediv = $(".game");
 
@@ -12,7 +12,7 @@
 			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: (piece.toUpperCase() === piece) ? BLACK : WHITE}};
 			playboard.makeMove(move);
 			console.log(playboard.print());
-			playerTurn();
+			//playerTurn();
 		}
 	};
 
@@ -43,8 +43,10 @@
 
 	$(".square").on('click', function() {
 		if($(this).hasClass('highlight')) {
-			ui.move($(".selected").attr('data-id'), $(this).attr('data-id'));
 			$(".highlight").removeClass("highlight");
+			ui.move($(".selected").attr('data-id'), $(this).attr('data-id'));
+			turn = otherPlayer(turn);
+			computerTurn();
 		}
 		else {
 			$(".highlight").removeClass('highlight');
@@ -63,4 +65,4 @@
 	});
 
 
-})($);
+//})($);

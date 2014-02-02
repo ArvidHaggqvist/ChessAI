@@ -144,9 +144,6 @@ function Board(positions) {
 	this.isEmpty = function(square) {
 		return (this.board[square]) ? false : true;
 	};
-	this.isOpponent = function(square) {
-		return (this.board[square]) ? ((this.board[square].color === turn) ? false : true) : false;
-	}
 	this.makeMove = function(move) {
 
 		var from = move.fromSquare,
@@ -193,7 +190,7 @@ function Board(positions) {
 
 			if(piece && piece.color === currentPlayer) {
 
-				if(piece.type === pieces.PAWN) {
+				if(piece.type.toLowerCase() === pieces.PAWN) {
 					// One square ahead, doesn't need 0x88 checking as pawn will become another piece before moving off board
 					if(self.isEmpty(i+pawnDelta[0])) {
 						addMove(i, i+pawnDelta[0], val);
@@ -214,7 +211,7 @@ function Board(positions) {
 					}
 				}
 				else {
-					var deltas = pieceDeltas[piece.type];
+					var deltas = pieceDeltas[piece.type.toLowerCase()];
 					for(k=0; k<deltas.length; k++) {
 						var delta = deltas[k];
 						
@@ -229,7 +226,7 @@ function Board(positions) {
 								}
 								else {
 									addMove(i, i+delta, val);
-									if(piece.type === pieces.KING || piece.type === pieces.KNIGHT) {
+									if(piece.type.toLowerCase() === pieces.KING || piece.type.toLowerCase() === pieces.KNIGHT) {
 										break; //Non-sliding pieces only invoke their deltas once
 									}
 									delta += deltas[k];
