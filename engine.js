@@ -83,7 +83,6 @@ deltaArray = [
 ];
 
 var turn = WHITE;
-//var epSquare;
 
 var startingPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -209,7 +208,7 @@ function Board(positions) {
 					}
 					// Pawn capture
 					for(j=2; j<4; j++) {
-						if(!(i+pawnDelta[j] & 0x88) && self.board[i+pawnDelta[j]] !== undefined && self.board[i+pawnDelta[j]].color === otherPlayer) {
+						if(!(i+pawnDelta[j] & 0x88) && self.isOpponent(i+pawnDelta[j])) {
 							addMove(i, i+pawnDelta[j], val);
 						}
 					}
