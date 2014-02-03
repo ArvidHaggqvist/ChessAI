@@ -158,7 +158,7 @@ function Board(positions) {
 		}
 
 		// Update king position
-		if(move.piece.type === pieces.KING) {
+		if(move.piece.type.toLowerCase() === pieces.KING) {
 			this.kingPositions[move.piece.color] = to;
 		}
 
@@ -242,7 +242,7 @@ function Board(positions) {
 		// Castling
 		var kingPosition = (currentPlayer === WHITE) ? 4 : 116;
 
-		if(!this.isEmpty(kingPosition) && this.board[kingPosition].type === pieces.KING) {
+		if(!this.isEmpty(kingPosition) && this.board[kingPosition].type.toLowerCase() === pieces.KING) {
 			if(!this.isAttacked(kingPosition)) {
 				var board = this.board;
 				// Castling, king side
@@ -256,7 +256,7 @@ function Board(positions) {
 			}
 		}
 
-		var legalMoves = this.checkLegal(moves);
+		var legalMoves = this.checkLegal(moves, currentPlayer);
 
 		return legalMoves;
 	};
@@ -271,9 +271,9 @@ function Board(positions) {
 				var piece = this.board[i];
 				if(piece && piece.color === attackingcolor) {
 					if(attackArray[i - square + 119] > 0 ) {
-						if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
+						if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type.toLowerCase() === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
 
-							if(piece.type === pieces.KING || piece.type === pieces.KNIGHT || piece.type === pieces.PAWN) {		
+							if(piece.type.toLowerCase() === pieces.KING || piece.type.toLowerCase() === pieces.KNIGHT || piece.type.toLowerCase() === pieces.PAWN) {		
 								 return true; // Non-sliding pieces
 							}
 							console.log(i);
@@ -309,6 +309,7 @@ function Board(positions) {
 		var legal = [];
 		moves.forEach(function(move) {
 			var b = self.duplicate();
+			b.makeMove(move);
 			if(!b.inCheck(color)) {
 				legal.push(move);
 			}
