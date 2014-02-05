@@ -78,11 +78,11 @@ deltaArray = [
 	0, 0, 17, 0, 0, 0, 0,  16, 0, 0, 0, 0, 15, 0, 0, 0,
 	0, 0, 0, 17, 0, 0, 0,  16, 0, 0, 0, 15, 0, 0, 0, 0,
 	0, 0, 0, 0, 17, 0, 0,  16, 0, 0, 15, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 17, 0,  16, 0, 15, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 17,  16, 15, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 17, 33,  16, 31, 15, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 18, 17,  16, 15, 14, 0, 0, 0, 0, 0, 0,
 	1, 1, 1, 1, 1, 1, 1,    0, -1, -1, -1, -1, -1, -1, -1, 0,
-	0, 0, 0, 0, 0, 0, -15, -16, -17, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, -15, 0, -16, 0, -17, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, -14, -15, -16, -17, -18, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, -15, -31, -16, -33, -17, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, -15, 0, 0, -16, 0, 0, -17, 0, 0, 0, 0, 0,
 	0, 0, 0, -15, 0, 0, 0, -16, 0, 0, 0, -17, 0, 0, 0, 0,
 	0, 0, -15, 0, 0, 0, 0, -16, 0, 0, 0, 0, -17, 0, 0, 0,
@@ -157,11 +157,11 @@ function Board(positions) {
 	};
 	this.makeMove = function(move) {
 
-		var from = move.fromSquare,
-			to = move.toSquare;
+		var from = parseInt(move.fromSquare),
+			to = parseInt(move.toSquare);
 
 		// If move is a pawn double move, set the enpassent square
-		if(Math.abs(to - from) === 32 && move.piece.type === pieces.PAWN) {
+		if(Math.abs(to - from) === 32 && move.piece.type.toLowerCase() === pieces.PAWN) {
 			this.epSquare = (to < from) ? from - 16 : from + 16;
 		}
 		else {
