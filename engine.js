@@ -41,6 +41,14 @@ var pieceAttackers = [
 	['q', 'b'],
 	['q', 'r']
 ];
+var pieceValues = {
+	k: 10000,
+	q: 1200,
+	r: 600, 
+	b: 400, 
+	n: 400,
+	p: 100
+};
 
 // The central square at index 119 marked as 0 and is the square we're checking to see whether or not it is attacked. The rest of the values are the values of the pieces whose deltas can attack from a given position.
 // To check if a square is attacked the formula attackingSquare - attackedSquare + 119. if the value is greater than 0 then the square can be attacked. 
@@ -93,6 +101,9 @@ function Board(positions) {
 	this.kingPositions = {'w': 4, 'b': 116};
 
 	this.epSquare;
+
+	this.whitePieceScore = 14800;
+	this.blackPieceScore = 14800;
 
 	this.traverse = function(action) {
 		for(i=0;i<this.board.length;i++) {
@@ -160,6 +171,14 @@ function Board(positions) {
 		// Update king position
 		if(move.piece.type.toLowerCase() === pieces.KING) {
 			this.kingPositions[move.piece.color] = to;
+		}
+		if(!this.isEmpty(to)) {
+			if(this.board[to].color === WHITE) {
+				this.whitePieceScore -= pieceValues[this.board[to].type];
+			}
+			else {
+				this.blackPieceScore -= pieceValues[this.board[to].type.toLowerCase()];
+			}
 		}
 
 		//Make the move

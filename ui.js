@@ -12,7 +12,6 @@
 			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: (piece.toUpperCase() === piece) ? BLACK : WHITE}};
 			playboard.makeMove(move);
 			console.log(playboard.print());
-			//playerTurn();
 		}
 	};
 
