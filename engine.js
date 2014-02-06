@@ -216,7 +216,7 @@ function Board(positions) {
 					}
 					// Two square move
 					if(rank(i)+1 === 2 || rank(i)+1 === 7 ) {
-						if(self.isEmpty(i+pawnDelta[0])) {
+						if(self.isEmpty(i+pawnDelta[1])) {
 							if(!(i+pawnDelta[1] & 0x88)) {
 								addMove(i, i+pawnDelta[1], val);
 							}
