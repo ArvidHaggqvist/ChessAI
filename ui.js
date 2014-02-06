@@ -4,7 +4,6 @@
 
 	var ui = {
 		move: function(from, to) {
-			console.log("invoked");
 			var fromSquare = $(".square[data-id='" + from + "']");
 			var piece = fromSquare.text();
 			fromSquare.text("");
@@ -13,6 +12,13 @@
 			playboard.makeMove(move);
 			console.log(playboard.print());
 			console.log(playboard.kingPositions);
+			if(playboard.inCheck(BLACK)) {
+				alert("Check");
+				console.log(playboard.checkLegal(playboard.generateMoves(), BLACK));
+			}
+			if(playboard.inCheck(WHITE)) {
+				alert("Check");
+			}
 		}
 	};
 
