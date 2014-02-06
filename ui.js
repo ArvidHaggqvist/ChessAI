@@ -43,7 +43,7 @@
 	var availableMoves = [];
 
 	function playerTurn() {
-		availableMoves = playboard.generateMoves();
+		availableMoves = playboard.checkLegal(playboard.generateMoves(), WHITE);
 	}
 	playerTurn();
 

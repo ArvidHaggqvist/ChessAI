@@ -265,11 +265,11 @@ function Board(positions) {
 			if(!this.isAttacked(kingPosition)) {
 				var board = this.board;
 				// Castling, king side
-				if(!this.isAttacked(kingPosition+1, opponent) && this.isEmpty(kingPosition+1) && !this.isAttacked(kingPosition+2, opponent) && this.isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type === pieces.ROOK) {
+				if(!this.isAttacked(kingPosition+1, opponent) && this.isEmpty(kingPosition+1) && !this.isAttacked(kingPosition+2, opponent) && this.isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type.toLowerCase() === pieces.ROOK) {
 					addMove(kingPosition, kingPosition+2, board[kingPosition], 'kcastling');
 				}
 				// Castling, queen side
-				if(!this.isAttacked(kingPosition-1, opponent) && this.isEmpty(kingPosition-1) && !this.isAttacked(kingPosition-2, opponent) && this.isEmpty(kingPosition-2) && !this.isAttacked(kingPosition-3, opponent) && this.isEmpty(kingPosition-3) && board[kingPosition-4] && board[kingPosition-4].type === pieces.ROOK) {
+				if(!this.isAttacked(kingPosition-1, opponent) && this.isEmpty(kingPosition-1) && !this.isAttacked(kingPosition-2, opponent) && this.isEmpty(kingPosition-2) && !this.isAttacked(kingPosition-3, opponent) && this.isEmpty(kingPosition-3) && board[kingPosition-4] && board[kingPosition-4].type.toLowerCase() === pieces.ROOK) {
 					addMove(kingPosition, kingPosition-3, board[kingPosition], 'qcastling');
 				}
 			}
@@ -290,7 +290,7 @@ function Board(positions) {
 				var piece = this.board[i];
 				if(piece && piece.color === attackingcolor) {
 					if(attackArray[i - square + 119] > 0 ) {
-						if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type.toLowerCase() === pieces.PAWN) ? 'p' + piece.color : piece.type ) ) {
+						if(inArray(pieceAttackers[attackArray[i - square + 119]-1], (piece.type.toLowerCase() === pieces.PAWN) ? 'p' + piece.color : piece.type.toLowerCase() ) ) {
 
 							if(piece.type.toLowerCase() === pieces.KING || piece.type.toLowerCase() === pieces.KNIGHT || piece.type.toLowerCase() === pieces.PAWN) {		
 								 return true; // Non-sliding pieces
