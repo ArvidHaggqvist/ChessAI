@@ -14,7 +14,7 @@
 			console.log(playboard.kingPositions);
 			if(playboard.inCheck(BLACK)) {
 				alert("Check");
-				console.log(playboard.checkLegal(playboard.generateMoves(), BLACK));
+				//console.log(playboard.checkLegal(playboard.generateMoves(), BLACK));
 			}
 			if(playboard.inCheck(WHITE)) {
 				alert("Check");
@@ -43,7 +43,7 @@
 	var availableMoves = [];
 
 	function playerTurn() {
-		availableMoves = playboard.checkLegal(playboard.generateMoves(), WHITE);
+		availableMoves = playboard.generateMoves();
 	}
 	playerTurn();
 

@@ -262,7 +262,7 @@ function Board(positions) {
 		var kingPosition = (currentPlayer === WHITE) ? 4 : 116;
 
 		if(!this.isEmpty(kingPosition) && this.board[kingPosition].type.toLowerCase() === pieces.KING) {
-			if(!this.isAttacked(kingPosition)) {
+			if(!this.isAttacked(kingPosition, opponent)) {
 				var board = this.board;
 				// Castling, king side
 				if(!this.isAttacked(kingPosition+1, opponent) && this.isEmpty(kingPosition+1) && !this.isAttacked(kingPosition+2, opponent) && this.isEmpty(kingPosition+2) && board[kingPosition+3] && board[kingPosition+3].type.toLowerCase() === pieces.ROOK) {
@@ -317,11 +317,7 @@ function Board(positions) {
 	};
 
 	this.duplicate = function() {
-		var newBoard = new Array(128);
-		this.traverse(function(square, i) {
-			newBoard[i] = square;
-		});
-		return new Board(newBoard);
+		return clone(this);
 	};
 	this.checkLegal = function(moves, color) {	
 		var self = this;
@@ -384,6 +380,31 @@ function otherPlayer(current) {
 	return (current === WHITE) ? BLACK : WHITE;
 }
 
+// Taken from here: http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+function clone(obj) {
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Array
+    if (obj instanceof Array) {
+        var copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+}
+
 
 var playboard = new Board(new Array(128));
 console.log(playboard);
@@ -392,7 +413,7 @@ console.log(playboard.generateMoves());
 
 /* Some tests */
 
-var testboard = playboard.duplicate();
+/*var testboard = playboard.duplicate();
 
 console.log("\n \n Some very primitive testing");
 testboard.putPiece({type: 'p', color: 'b'}, 81);
@@ -419,4 +440,4 @@ testboard.putPiece({type: 'p', color: 'b'}, 37);
 console.log(testboard.kingPositions[WHITE]);
 console.log(testboard.print());
 console.log(testboard.inCheck(WHITE));
-console.log(testboard.isAttacked(37, WHITE));
+console.log(testboard.isAttacked(37, WHITE));*/
