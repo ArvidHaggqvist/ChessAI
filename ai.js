@@ -8,3 +8,12 @@ function computerTurn() {
 	turn = otherPlayer(turn);
 	playerTurn();
 }
+function evaluateBoard(board, color, moves) {
+	var pieceScore = (color === WHITE) ? board.whitePieceScore - board.blackPieceScore :  board.whitePieceScore - board.blackPieceScore;
+	var mobilityScore = (moves) ? 2*moves.length : 2*generateMoves().length;
+	return pieceScore + mobilityScore;
+}
+var maxDepth = 3;
+function alphaBeta(alpha, beta, depth) {
+	
+}
