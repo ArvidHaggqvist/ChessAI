@@ -11,6 +11,8 @@ body {
 	width: 60px;
 	height: 60px;
 	background: #fff;
+	text-align: center;
+	font-size: 45px;
 }
 .black {
 	background: #c1c1c1;
@@ -20,4 +22,8 @@ body {
 	height: 58px;
 	background: blue;
 	border: 1px solid white;
+}
+.square[data-color='w'] {
+	color: white;
+	text-shadow: 0 0 5px black;
 }

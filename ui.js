@@ -1,20 +1,22 @@
-//(function(jQuery, undefined) {
 
 	var gamediv = $(".game");
 
 	var ui = {
 		move: function(from, to) {
 			var fromSquare = $(".square[data-id='" + from + "']");
-			var piece = fromSquare.text();
+			var piece = fromSquare.attr('data-piece');
+			var UIPiece = fromSquare.text();
 			fromSquare.text("");
-			$(".square[data-id='" + to + "']").text(piece);
-			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: (piece.toUpperCase() === piece) ? BLACK : WHITE}};
+			var toSquare = $(".square[data-id='" + to + "']");
+			toSquare.text(UIPiece);
+			toSquare.attr('data-piece', piece);
+			toSquare.attr('data-color', fromSquare.attr('data-color'));
+			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: fromSquare.attr('data-color')}};
+			fromSquare.attr('data-color', '');
+			fromSquare.attr('data-piece', '');
 			playboard.makeMove(move);
-			console.log(playboard.print());
-			console.log(playboard.kingPositions);
 			if(playboard.inCheck(BLACK)) {
 				alert("Check");
-				//console.log(playboard.checkLegal(playboard.generateMoves(), BLACK));
 			}
 			if(playboard.inCheck(WHITE)) {
 				alert("Check");
@@ -22,10 +24,19 @@
 		}
 	};
 
+	var pieceSymbols = {
+		'p': '♟',
+		'r': '♜',
+		'k': '♚',
+		'q': '♛',
+		'n': '♞',
+		'b': '♝'
+	};
+
 	// Generate board
 	playboard.traverse(function(square, index) {
 		if(square !== undefined) {
-			gamediv.append("<div class='square' data-id='" + index + "' data-piece='" + square.type + "' data-color='" + square.color + "'>" + ((square.color === WHITE) ? square.type : square.type.toUpperCase()) + "</div>");
+			gamediv.append("<div class='square' data-id='" + index + "' data-piece='" + square.type + "' data-color='" + square.color + "'>" + pieceSymbols[square.type] + "</div>");
 		}
 		else {
 			gamediv.append("<div class='square' data-id='" + index + "'></div>");
@@ -74,6 +85,3 @@
 			}
 		}
 	});
-
-
-//})($);
