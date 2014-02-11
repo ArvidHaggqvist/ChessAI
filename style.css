@@ -17,7 +17,7 @@ body {
 .black {
 	background: #c1c1c1;
 }
-.highlight {
+.highlight, .selected {
 	width: 58px;
 	height: 58px;
 	background: blue;
