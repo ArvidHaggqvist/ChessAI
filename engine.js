@@ -184,9 +184,16 @@ function Board(positions) {
 		//Make the move
 		this.board[from] = undefined;
 		this.board[to] = move.piece;
-		if(rank(to)+1 === 1 || rank(to)+1 === 8 && move.piece.type.toLowerCase() === pieces.PAWN) {
-			this.board[to] = {type: pieces.QUEEN, color: turn};
+		if(rank(to)+1 === 1 || rank(to)+1 === 8) {
+			if(move.piece.type.toLowerCase() === pieces.PAWN) {
+				this.board[to] = {type: pieces.QUEEN, color: turn};
+			}
 		}
+
+		/*if(move.type === 'kcastling') {
+			this.board[to-1] = this.board[to+3];
+			this.board[to +3] = undefined;
+		}*/
 
 	};
 	this.generateMoves = function() {

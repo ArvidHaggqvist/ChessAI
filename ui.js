@@ -13,8 +13,6 @@
 			toSquare.attr('data-color', fromSquare.attr('data-color'));
 			if(rank(to)+1 === 8 || rank(to)+1 === 1) {
 				if(piece === 'p') {
-					console.log(rank(to));
-					console.log(piece);
 					toSquare.attr('data-piece', pieces.QUEEN);
 					toSquare.text(pieceSymbols['q']);
 				}
@@ -24,10 +22,10 @@
 			fromSquare.attr('data-piece', '');
 			playboard.makeMove(move);
 			if(playboard.inCheck(BLACK)) {
-				alert("Check");
+				alert("Black in Check");
 			}
 			if(playboard.inCheck(WHITE)) {
-				alert("Check");
+				alert("White in Check");
 			}
 		}
 	};
