@@ -11,6 +11,14 @@
 			toSquare.text(UIPiece);
 			toSquare.attr('data-piece', piece);
 			toSquare.attr('data-color', fromSquare.attr('data-color'));
+			if(rank(to)+1 === 8 || rank(to)+1 === 1) {
+				if(piece === 'p') {
+					console.log(rank(to));
+					console.log(piece);
+					toSquare.attr('data-piece', pieces.QUEEN);
+					toSquare.text(pieceSymbols['q']);
+				}
+			}
 			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: fromSquare.attr('data-color')}};
 			fromSquare.attr('data-color', '');
 			fromSquare.attr('data-piece', '');

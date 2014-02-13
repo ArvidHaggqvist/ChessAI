@@ -13,7 +13,10 @@ function evaluateBoard(board, color, moves) {
 	var mobilityScore = (moves) ? 2*moves.length : 2*generateMoves().length;
 	return pieceScore + mobilityScore;
 }
-var maxDepth = 3;
-function alphaBeta(alpha, beta, depth) {
-	
+/*var maxDepth = 3;
+function alphaBeta(alpha, beta, depth, board) {
+	if(depth === maxDepth) {
+		return evaluateBoard(board, )
+	}
 }
+alphaBeta(100000, -100000, 1, playboard);*/

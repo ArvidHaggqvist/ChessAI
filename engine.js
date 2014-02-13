@@ -132,7 +132,7 @@ function Board(positions) {
 			var piece = {
 				type: pieceString.toLowerCase(),
 				color: ( pieceString.toLowerCase() === pieceString ) ? WHITE : BLACK
-			}
+			};
 			return piece;
 		}
 		var boardIndex = 0;
@@ -184,6 +184,10 @@ function Board(positions) {
 		//Make the move
 		this.board[from] = undefined;
 		this.board[to] = move.piece;
+		if(rank(to)+1 === 1 || rank(to)+1 === 8 && move.piece.type.toLowerCase() === pieces.PAWN) {
+			this.board[to] = {type: pieces.QUEEN, color: turn};
+		}
+
 	};
 	this.generateMoves = function() {
 		var self = this;
@@ -225,7 +229,7 @@ function Board(positions) {
 					// Pawn capture
 					for(j=2; j<4; j++) {
 						if(!(i+pawnDelta[j] & 0x88) && self.isOpponent(i+pawnDelta[j])) {
-							addMove(i, i+pawnDelta[j], val);
+							addMove(i, i+pawnDelta[j], val, 'capture');
 						}
 					}
 				}
