@@ -16,12 +16,7 @@ function evaluateBoard(board, color, moves) {
 	var pieceScore = (color === WHITE) ? board.whitePieceScore - board.blackPieceScore :  board.blackPieceScore - board.whitePieceScore;
 	var mobilityScore = (moves) ? 2*moves.length : 2*board.generateMoves().length;
 	var score = pieceScore + mobilityScore;
-	if(color === BLACK) {
-		return score * -1;
-	}
-	else {
-		return score;
-	}
+	return score;
 }
 
 var maxDepth = 3;
@@ -35,14 +30,14 @@ function rootSearch() {
 	moves.forEach(function(mmm, i) {
 		var duplicatedBoard = playboard.duplicate();
 		duplicatedBoard.makeMove(mmm);
-		var s = alphaBeta(-100000, 100000, 2, duplicatedBoard, otherPlayer(duplicatedBoard.turn));
+		var s = -alphaBeta(-100000, 100000, 2, duplicatedBoard, otherPlayer(duplicatedBoard.turn));
 		//var s = -negaMax(2, playboard);
 		if(s>bestMoveScore) {
 			bestMoveScore = s;
 			bestMoveIndex = i;
 		}
 	});
-	console.log(bestMoveScore);
+	console.log("Best move score: " + bestMoveScore);
 	return bestMoveIndex;
 }
 
@@ -53,6 +48,10 @@ function alphaBeta(alpha, beta, depth, board, turn) {
 	if(depth === maxDepth) {
 		return evaluateBoard(board, board.turn);
 	}
+	if(depth === maxDepth-1) {
+		console.log("Current player: " + board.turn);
+		//console.log(board.print());
+	}
 	//var bestIndex = 0;
 	//var bestScore = alpha;
 	//var score;
@@ -61,12 +60,21 @@ function alphaBeta(alpha, beta, depth, board, turn) {
 
 	moves.forEach(function(m) {
 		var duplicateBoard = board.duplicate();
+		var attack = false;
+		if(duplicateBoard.isOpponent(m.toSquare)) attack = true;
 		duplicateBoard.makeMove(m);
+
+		if(attack && depth === maxDepth-1) {
+			console.log(duplicateBoard.print());
+			console.log(evaluateBoard(duplicateBoard, BLACK));
+			console.log(duplicateBoard.whitePieceScore);
+			console.log(duplicateBoard.blackPieceScore);
+		}
 
 		var score = -alphaBeta(-beta, -alpha, depth+1, duplicateBoard, otherPlayer(turn));
 
 		if(score >= beta) {
-			console.log("Invoked");
+			console.log("Beta cutoff");
 			return beta;
 		}
 		if(score > alpha) {
