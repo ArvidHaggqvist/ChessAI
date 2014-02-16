@@ -308,12 +308,12 @@ function Board(positions) {
 							if(piece.type.toLowerCase() === pieces.KING || piece.type.toLowerCase() === pieces.KNIGHT || piece.type.toLowerCase() === pieces.PAWN) {		
 								 return true; // Non-sliding pieces
 							}
-							console.log(i);
+							//console.log(i);
 
 							var delta = deltaArray[i - square + 119];
 							
 							for(j=i; j !== square; j+=delta) {
-								console.log(j);
+								//console.log(j);
 								if(!this.isEmpty(j) && j !== i) {
 									break;
 								}
