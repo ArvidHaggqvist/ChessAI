@@ -90,7 +90,7 @@ deltaArray = [
 	-15, 0, 0, 0, 0, 0, 0, -16, 0, 0, 0, 0, 0, 0, -17
 ];
 
-var turn = WHITE;
+//var turn = WHITE;
 
 var startingPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -99,6 +99,8 @@ function Board(positions) {
 	this.board = positions || new Array(128);
 
 	this.kingPositions = {'w': 4, 'b': 116};
+
+	this.turn = WHITE;
 
 	this.epSquare;
 
@@ -122,7 +124,7 @@ function Board(positions) {
 		return (this.board[square]) ? false : true;
 	};
 	this.isOpponent = function(square) {
-		return (this.board[square]) ? ((this.board[square].color === turn) ? false : true) : false;
+		return (this.board[square]) ? ((this.board[square].color === this.turn) ? false : true) : false;
 	};
 	this.parseFEN = function(fen) {
 		var parts = fen.split(" ");
@@ -186,7 +188,7 @@ function Board(positions) {
 		this.board[to] = move.piece;
 		if(rank(to)+1 === 1 || rank(to)+1 === 8) {
 			if(move.piece.type.toLowerCase() === pieces.PAWN) {
-				this.board[to] = {type: pieces.QUEEN, color: turn};
+				this.board[to] = {type: pieces.QUEEN, color: this.turn};
 			}
 		}
 
@@ -210,7 +212,7 @@ function Board(positions) {
 			moves.push(move);
 		}
 
-		var currentPlayer = turn,
+		var currentPlayer = this.turn,
 			opponent = otherPlayer(currentPlayer);
 
 		var pawnDelta = (currentPlayer === WHITE) ? pieceDeltas.pw : pieceDeltas.pb;

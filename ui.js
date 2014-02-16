@@ -74,14 +74,14 @@
 			$(".highlight").removeClass("highlight");
 			ui.move($(".selected").attr('data-id'), $(this).attr('data-id'));
 			$(".selected").removeClass("selected");
-			turn = otherPlayer(turn);
+			playboard.turn = otherPlayer(playboard.turn);
 			computerTurn();
 		}
 		else {
 			$(".highlight").removeClass('highlight');
 			$(".selected").removeClass('selected');
 			var self = $(this);
-			if(turn === WHITE) {
+			if(playboard.turn === WHITE) {
 				self.addClass('selected');
 				availableMoves.forEach(function(move) {
 					if( parseInt(self.attr('data-id')) === move.fromSquare ) {
