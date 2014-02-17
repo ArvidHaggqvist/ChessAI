@@ -6,6 +6,7 @@ function computerTurn() {
 
 	var move = availableMoves[rootSearch()];
 	console.log("Invokations: " + invocations);
+	invocations = 0;
 	ui.move(move.fromSquare, move.toSquare);
 	playboard.turn = otherPlayer(playboard.turn);
 	playerTurn();
@@ -40,12 +41,15 @@ function rootSearch() {
 
 function alphaBeta(alpha, beta, depth, board, turn) {
 	invocations++;
+	if(invocations > 40000) {
+		throw new Error("Too many invocations");
+	}
 	board.turn = turn;
 	if(depth === maxDepth) {
 		return evaluateBoard(board, board.turn);
 	}
 	if(depth === maxDepth-1) {
-		console.log("Current player: " + board.turn);
+		//console.log("Current player: " + board.turn);
 		//console.log(board.print());
 	}
 

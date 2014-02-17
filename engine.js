@@ -253,7 +253,7 @@ function Board(positions) {
 							}
 							else {
 								if(self.isOpponent(i+delta)) {
-									addMove(i, i+delta, val);
+									addMove(i, i+delta, val, 'capture');
 									break;
 								}
 								else {
@@ -290,14 +290,24 @@ function Board(positions) {
 
 		var legalMoves = this.checkLegal(moves, currentPlayer);
 
-		return legalMoves;
+		var attackingMoves = [];
+		legalMoves.forEach(function(v) {
+			if(v.movetype === 'capture') {
+				attackingMoves.unshift(v);
+			}
+			else {
+				attackingMoves.push(v);
+			}
+		});
+
+		return attackingMoves;
 	};
 
 	this.isAttacked = function(square, attackingcolor) {
 		
 		for(i=0; i<this.board.length; i++) {
 			if(i & 0x88) {
-				i+= 7
+				i+= 7;
 			}
 			else {
 				var piece = this.board[i];

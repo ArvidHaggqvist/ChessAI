@@ -66,6 +66,7 @@
 
 	function playerTurn() {
 		availableMoves = playboard.generateMoves();
+		console.log(availableMoves);
 	}
 	playerTurn();
 
