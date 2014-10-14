@@ -112,7 +112,7 @@ function Board(positions) {
 			if(i & 0x88) {
 				i+=7;
 			}
-			else {
+			else {   
 				action(this.board[i], i);
 			}
 		}
@@ -192,10 +192,10 @@ function Board(positions) {
 			}
 		}
 
-		/*if(move.type === 'kcastling') {
+		if(move.movetype === 'kcastling') {
 			this.board[to-1] = this.board[to+3];
 			this.board[to +3] = undefined;
-		}*/
+		}
 
 	};
 	this.generateMoves = function() {

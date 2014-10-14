@@ -17,7 +17,17 @@
 					toSquare.text(pieceSymbols['q']);
 				}
 			}
-			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: fromSquare.attr('data-color')}};
+			var type;
+			if(piece === pieces.KING && parseInt(to) === parseInt(from) + 2) {
+				type = 'kcastling';
+				$(".square[data-id='" + to-1 + "']").attr('data-piece', pieces.ROOK);
+				$(".square[data-id='" + to-1 + "']").attr('data-color', fromSquare.attr('data-color'));
+				$(".square[data-id='" + to-1 + "']").text(pieceSymbols['r']);
+				$(".square[data-id='" + to+1 + "']").attr('data-piece', '');
+				$(".square[data-id='" + to+1 + "']").attr('data-color', '');
+				$(".square[data-id='" + to-1 + "']").text('');
+			}
+			var move = {fromSquare: from, toSquare: to, piece: {type: piece, color: fromSquare.attr('data-color')}, movetype: type};
 			fromSquare.attr('data-color', '');
 			fromSquare.attr('data-piece', '');
 			playboard.makeMove(move);
